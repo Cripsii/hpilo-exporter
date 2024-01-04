@@ -3,6 +3,7 @@ Pulls data from specified iLO and presents as Prometheus metrics
 """
 from __future__ import print_function
 import sys
+import re
 import ssl
 import time
 import os
@@ -288,13 +289,18 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         if url.path == self.server.endpoint and ilo_host and ilo_user and ilo_password and ilo_port:
             ilo = None
-            ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-            #   Sadly, ancient iLO's aren't dead yet, so let's enable sslv3 by default
+            ssl_context = ssl.create_default_context()
+            
+            # Start with the default cipher set
+            ciphers = ssl._DEFAULT_CIPHERS
+            # Remove any explit prohibition against 3DES
+            ciphers = re.sub(r":!3DES", "", ciphers)
+            ssl_context.set_ciphers(ciphers)
+            
             ssl_context.options &= ~ssl.OP_NO_SSLv3
             ssl_context.check_hostname = False
-            ssl_context.set_ciphers(('ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+HIGH:'
-                                     'DH+HIGH:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+HIGH:RSA+3DES:!aNULL:'
-                                     '!eNULL:!MD5'))
+            ssl_context.verify_mode = ssl.CERT_NONE
+            
             try:
                 ilo = hpilo.Ilo(hostname=ilo_host,
                                 login=ilo_user,
