@@ -3,7 +3,7 @@ Pulls data from specified iLO and presents as Prometheus metrics
 """
 from __future__ import print_function
 import sys
-# import ssl
+import ssl
 import time
 import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
