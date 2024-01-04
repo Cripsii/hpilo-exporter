@@ -7,7 +7,7 @@ pip install psutil
 
 echo "############## Installing hpilo-exporter ##################"
 #git clone and install
-git clone https://github.com/hpilo-exporter/hpilo-exporter
+git clone https://github.com/Cripsii/hpilo-exporter
 cd hpilo-exporter && pip install .
 
 echo "############## Create User for hpilo-exporter ##################"
