@@ -305,7 +305,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 ilo = hpilo.Ilo(hostname=ilo_host,
                                 login=ilo_user,
                                 password=ilo_password,
-                                port=ilo_port, timeout=10, ssl_context=ssl_context)
+                                port=ilo_port, timeout=10, protocol=ssl.PROTOCOL_TLSv1))
             except hpilo.IloLoginFailed:
                 print("ILO login failed")
                 self.return_error()
